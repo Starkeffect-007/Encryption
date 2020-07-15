@@ -1,4 +1,4 @@
-package com.security.encryption.Test_EncryptDecrypt;
+	package com.security.encryption.Test_EncryptDecrypt;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -119,7 +119,7 @@ public class DecryptFile {
 		}
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\src\\main\\resources\\plainfile_decrypted.txt");
+			fos = new FileOutputStream("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result\\plainfile_decrypted.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

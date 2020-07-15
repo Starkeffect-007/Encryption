@@ -37,7 +37,7 @@ public class EncryptFile {
 			@FormDataParam("file") InputStream uploadedInputStream,  
             @FormDataParam("file") FormDataContentDisposition fileDetail){
 		
-		String fileLocation = "C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result" + fileDetail.getFileName();  
+		String fileLocation = "C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result\\" + fileDetail.getFileName();  
         //saving file  
 try {  
     FileOutputStream out = new FileOutputStream(new File(fileLocation));  

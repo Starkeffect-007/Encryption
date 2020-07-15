@@ -3,15 +3,17 @@ package com.security.encryption.Test_EncryptDecrypt;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONString;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.DataLengthException;
@@ -21,16 +23,15 @@ import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
-import org.json.JSONObject;
 
-@Path("/stringapi")
-public class StringApi {
+@Path("/JsonTest")
+public class JsonTest {
 	String key=null;
 	String input=null;
 	int mode;
 	byte[] iv=new byte[16];
 	
-	public StringApi() {}
+	public JsonTest() {}
 	  
 	   public String encryptString(String keyBytes,String plaintext) {
 		   String encryptedInput=null;
@@ -80,9 +81,14 @@ public class StringApi {
 	   }
 	   
 	    @POST
-		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+		@Consumes(MediaType.APPLICATION_JSON)
 		@Produces(MediaType.APPLICATION_JSON)	
-		public static JSONObject main(@FormParam ("Pass")String keyString,@FormParam ("Text")String input,@FormParam ("Mode") int mode1) {
+		public String main(RequestBody inputjsonObj) {
+	    	
+	    		String keyString = inputjsonObj.Pass;
+	    		String input= inputjsonObj.text;
+	    		int mode1 = inputjsonObj.Mode;
+	    		
 				String finalKey=null;
 				String Result=null;
 				char ch= '*';
@@ -93,21 +99,18 @@ public class StringApi {
 					}
 				else {System.out.println("Key not found");}
 				System.out.println(finalKey);
-				StringApi obj = new StringApi();
+				JsonTest obj = new JsonTest();
 				
 				if(mode1==0){
-					Result= obj.encryptString(finalKey,input);
+					Result = obj.encryptString(finalKey,input);
 				}else if(mode1==1) {
-					Result= obj.decryptString(finalKey,input);
+					Result = obj.decryptString(finalKey,input);
 				}else {
 					System.out.println("Invalid Mode Value");
 					}
 				System.out.println(Result);
-				JSONObject responseObj = new JSONObject();
-				return responseObj.put("encrypted String", Result);
+				return Result;
 			}
-
-
 	    @GET
 	    public Response resp() {
 	    	return Response
