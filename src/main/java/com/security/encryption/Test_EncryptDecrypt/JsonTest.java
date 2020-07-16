@@ -83,7 +83,7 @@ public class JsonTest {
 	    @POST
 		@Consumes(MediaType.APPLICATION_JSON)
 		@Produces(MediaType.APPLICATION_JSON)	
-		public String main(RequestBody inputjsonObj) {
+		public Response main(RequestBody inputjsonObj) {
 	    	
 	    		String keyString = inputjsonObj.Pass;
 	    		String input= inputjsonObj.text;
@@ -100,17 +100,22 @@ public class JsonTest {
 				else {System.out.println("Key not found");}
 				System.out.println(finalKey);
 				JsonTest obj = new JsonTest();
-				
+				String Message = null;
 				if(mode1==0){
 					Result = obj.encryptString(finalKey,input);
+					Message = "{\"Encrypted String\": Result}";
 				}else if(mode1==1) {
 					Result = obj.decryptString(finalKey,input);
+					Message = "{\"Encrypted String\": Result}";
 				}else {
 					System.out.println("Invalid Mode Value");
 					}
-				System.out.println(Result);
-				return Result;
-			}
+				
+				  return Response
+					      .status(Response.Status.OK)
+					      .entity(Message)
+					      .type(MediaType.APPLICATION_JSON)
+					      .build();			}
 	    @GET
 	    public Response resp() {
 	    	return Response

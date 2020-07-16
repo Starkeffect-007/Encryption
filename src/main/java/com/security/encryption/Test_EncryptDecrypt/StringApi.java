@@ -82,9 +82,11 @@ public class StringApi {
 	    @POST
 		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 		@Produces(MediaType.APPLICATION_JSON)	
-		public static JSONObject main(@FormParam ("Pass")String keyString,@FormParam ("Text")String input,@FormParam ("Mode") int mode1) {
+		public Response main(@FormParam ("Pass")String keyString,@FormParam ("Text")String input,@FormParam ("Mode") int mode1) {
 				String finalKey=null;
 				String Result=null;
+				String Message = null;
+
 				char ch= '*';
 				if(keyString.length() <= 32) {
 					finalKey = StringUtils.rightPad(keyString,32, ch);
@@ -97,15 +99,23 @@ public class StringApi {
 				
 				if(mode1==0){
 					Result= obj.encryptString(finalKey,input);
+					Message = "{\"Encrypted String\": \""+Result+"\"}";
+
 				}else if(mode1==1) {
 					Result= obj.decryptString(finalKey,input);
+					Message = "{\"Decrypted String\": \""+Result+"\"}";
 				}else {
 					System.out.println("Invalid Mode Value");
+					Message = "{\"Invalid Mode\": \"Please Check the Mode Value (0-Encryption/1-Decryption)\"}";
 					}
 				System.out.println(Result);
-				JSONObject responseObj = new JSONObject();
-				return responseObj.put("encrypted String", Result);
-			}
+				return Response
+					      .status(Response.Status.OK)
+					      .entity(Message)
+					      .type(MediaType.APPLICATION_JSON)
+					      .build();
+			//	return Response.created();
+				}
 
 
 	    @GET
