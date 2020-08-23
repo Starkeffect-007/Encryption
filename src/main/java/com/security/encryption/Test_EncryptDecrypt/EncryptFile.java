@@ -20,6 +20,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
 import java.io.*;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -30,13 +32,13 @@ public class EncryptFile {
 	
 	@POST
     @Path("/upload")
-	@Produces("text/plain")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
 	public static Response main(
 			@FormDataParam("Pass") String key,
 			@FormDataParam("file") InputStream uploadedInputStream,  
             @FormDataParam("file") FormDataContentDisposition fileDetail){
-		
+		String fName=fileDetail.getFileName();
 		String fileLocation = "C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result\\" + fileDetail.getFileName();  
         //saving file  
 try {  
@@ -53,7 +55,7 @@ try {
 		
 		FileInputStream inpFile = null;
 		try {
-			inpFile = new FileInputStream("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result\\plainfile.txt");
+			inpFile = new FileInputStream("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result\\"+fName);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -62,7 +64,7 @@ try {
       		File file = new File(folderPath);
              	if (!file.exists()) {
             		if (file.mkdir()) {
-                		System.out.println("Directory is created!");
+        System.out.println("Directory is created!");
 		FileOutputStream outFile = null;
 		try {
 			outFile = new FileOutputStream("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Upload\\File Encryption\\encryptedfile.txt");
@@ -175,51 +177,34 @@ try {
 		}
 		
 		System.out.println("File Encrypted.");
-		
+		File index = new File("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Upload\\File Encryption");
+		 //File file2 = new File("C:\\Users\\admin\\Desktop\\iv.enc");
+		 //File file3 = new File("C:\\Users\\admin\\Desktop\\encryptedfile.txt");
+		           		
 		ZipFiles zipUtil = new ZipFiles();
 		try {
-	        zipUtil.zipDirectory(file, zipPath);
+	        zipUtil.zipDirectory(index, zipPath);
+	        String[]entries = index.list();
+			for(String s: entries){
+			    File currentFile = new File(index.getPath(),s);
+			    currentFile.delete();
+			}
+		    index.delete();
+
 			} catch (Exception ex) {
 			ex.printStackTrace();
 			}
-		
-		/*try {
-			zip(folderPath,zipPath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-
 	}
             	} else {
                			System.out.println("Failed to create directory!");
        					 }
-             	String output = "File successfully uploaded please Wait for the download to begin"; 
-                return Response.status(200).entity(output).build();
+             	//String output = "File successfully uploaded please Wait for the download to begin"; 
+               // return Response.status(200).entity(output).build();
                 
-             	/*File Encryptedfile = new File("C:\\Users\\admin\\git\\Encryption\\encryption\\Upload\\File Encryption");  
+             	File Encryptedfile = new File("C:\\Users\\admin\\git\\Encryption\\Test-EncryptDecrypt\\Result\\EncryptedText.zip");  
                 ResponseBuilder response = Response.ok((Object) Encryptedfile);  
                 response.header("Content-Disposition","attachment; filename=\"EncryptedText.zip\"");  
-                return response.build();*/
+                return response.build();
                 
-                }
-	/*public static void zip(String sourceDirPath, String zipFilePath) throws IOException {
-	    Path p = Files.createFile(Paths.get(zipFilePath));
-	    try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
-	        Path pp = Paths.get(sourceDirPath);
-	        Files.walk(pp)
-	          .filter(path -> !Files.isDirectory(path))
-	          .forEach(path -> {
-	              ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
-	              try {
-	                  zs.putNextEntry(zipEntry);
-	                  Files.copy(path, zs);
-	                  zs.closeEntry();
-	            } catch (IOException e) {
-	                System.err.println(e);
-	            }
-	          });
-	    }
-	}*/
-	
-		
+                }	
 }

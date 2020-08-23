@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RequestBody {
     @XmlElement String Pass;
-    @XmlElement String text;
+    @XmlElement String Text;
     @XmlElement Integer Mode;
+    @XmlElement Integer Alg;
 }
